@@ -13,6 +13,8 @@ import { Contenido } from "./componentes/Contenido";
 import {Home} from "./componentes/Home";
 import {Api} from "./componentes/Api";
 import {Ejemplos} from "./componentes/Ejemplos";
+import { Footer } from "./Footer";
+import './index.css'
 function App() {
    return(
       <Fragment key=''>
@@ -30,13 +32,18 @@ function App() {
          <Tabla />
          <Profile/> */}
          <Router>
+         <div className="d-flex flex-column min-vh-100">
             <Menubar />
             <Routes>
                <Route path="/" element={<Home />} />
                <Route path="/contenido" element={<Contenido/>}/>
                <Route path="/api" element={<Api/>}/>
                <Route path="/ejemplos" element={<Ejemplos/>}/>
+               
             </Routes>
+            <br /><br /> <br />
+            <Footer/>
+            </div>
          </Router>
       </Fragment>
      

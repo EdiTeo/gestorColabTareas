@@ -6,7 +6,7 @@ import { Link,useLocation } from "react-router-dom";
 export default function Menubar(){
     const ubicacion = useLocation();
     const estilo={
-        width:'90px',
+        width:'90px', 
         height:'55px',
         
     }
@@ -38,6 +38,7 @@ export default function Menubar(){
                     </form>
                 </div>
             </div>  
+            
         </nav>
     </>);
 
