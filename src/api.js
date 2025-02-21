@@ -1,13 +1,15 @@
 
 const API_URL = "https://jsonplaceholder.typicode.com/todos";
 
-export const obtenerTareas = async() => {
+export const obtenerTareas = async() =>{
     try{
-        const respuesta = await fetch(API_URL);
-        const tareas = await respuesta.json();
-        return tareas.slice(0, 5);
+        const caja = await fetch(API_URL);
+        //if (!caja.ok) throw new Error(`Error HTTP: ${caja.status}`);
+        const resultado = await caja.json();
+        return resultado;
     }catch(error){
-        console.error("El error es: ", error);
+        console.error(`${error}`);
+        return[];
     }
 }
 //para crear una nueva tareas
@@ -27,7 +29,7 @@ export const crearTarea = async(titulo,completado) =>{
 //eliminar
 export const eliminarTarea = async(id)=>{
     try{
-        await fetch(`${API_URL}/${id}}`,{
+        await fetch(`${API_URL}/${id}`,{
             method:'DELETE'
         });
         console.log(`Tarea ${id} eliminada exitosamente!!!`);
@@ -50,3 +52,5 @@ export const actualizacion = async (id, nuevoDato)=>{
         console.error(`Tenemos un error al actualizar datos: ${error}`);
     }
 }
+export const suma = (a,b) => (a + b);
+ 
