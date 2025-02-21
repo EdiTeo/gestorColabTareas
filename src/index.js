@@ -28,7 +28,7 @@ const ejercutar = async()=>{
 
 ejercutar();
 //? realizaremos un tipo ls ver todos los archivos que hay en ella
-// para poder leer desde directorio
+ 
 const folder = process.argv[2] ?? '.';
 
 async function LS(folder){
