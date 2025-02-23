@@ -11,25 +11,25 @@ export default function Menubar(){
         
     }
     return(<>
-        <nav className="navbar navbar-expand-lg navbar-light " style={{backgroundColor:" #e3f2fd"}}>
+        <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor:" #e3f2fd"}}>
             <div className="container-fluid">
                 <Link to='/'>
                     <img style={estilo} src={logo} alt="logo" />
                 </Link>  {/**Colocar el LOGO explicitamente redirecciona a la parte principal */}
                 <button className="navbar-toggler" 
                     type="button"
-                    data-toggle="collapse" 
-                    data-target="#navbarNavAltMarkup" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNavAltMarkup" 
                     aria-controls="navbarNavAltMarkup" 
                     aria-expanded="false" 
                     aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse d-lg-flex justify-content-between" id="navbarNavAltMarkup">
+                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div className="navbar-nav">
                         <Link className={`nav-item nav-link ${ubicacion.pathname === "/contenido" ? "active" : ""}`} to='/contenido'>Contenido</Link>
                         <Link className={`nav-item nav-link ${ubicacion.pathname == '/api'? 'active' : ''}`} to='/api'>API</Link>
-                        <Link className={`nav-item nav-link ${ubicacion.pathname === "/ejemplos" ? "active" : ""}`} to='/ejemplos'>Ejemplos</Link>
+                        <Link className={`nav-item nav-link ${ubicacion.pathname === "/ejemplos" ? "active" : ""}`} to='/ejemplos'>Subir Archivo</Link>
                          
                     </div>
                     <form className="d-flex ms-lg-auto">
@@ -38,7 +38,7 @@ export default function Menubar(){
                     </form>
                 </div>
             </div>  
-            
+             
         </nav>
     </>);
 
