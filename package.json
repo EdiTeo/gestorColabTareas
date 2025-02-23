@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "firebase": "^11.3.1",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.5"
+    "react-router-dom": "^7.1.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
