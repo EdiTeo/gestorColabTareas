@@ -1,11 +1,13 @@
 import React from "react";
 import {uploadFiles} from "../firebase/init";
+
 export function  Ejemplos(){
     // const [contador, setContador] = React.useState(0);
     // function tocar(){
     //     setContador(contador+1);
     // }
     //ver todos los archivos creados
+
     return( 
         <>
         <div className="text-sm-start">

@@ -30,3 +30,4 @@ export async function uploadFiles(file){//Subir archivos
         console.error(error);
     }
 }
+ 
