@@ -8,7 +8,6 @@ export default function Menubar(){
     const estilo={
         width:'90px', 
         height:'55px',
-        
     }
     return(<>
         <nav className="navbar navbar-expand-lg navbar-light" style={{backgroundColor:" #e3f2fd"}}>
