@@ -15,8 +15,8 @@ export function  Ejemplos(){
                 
                  {/**<button type="button" onClick={tocar}>Contador {contador}</button> */}
                  {/** */}
-                    <label for="formFile" class="form-label">En esta seccion puede subir archivos solo .pdf </label>
-                    <input class="form-control" accept=".pdf" type="file" id="formFile" onChange={e => uploadFiles(e.target.files[0])}/>
+                    <label htmlfor="formFile" className="form-label">En esta seccion puede subir archivos solo .pdf </label>
+                    <input className="form-control" accept=".pdf" type="file" id="formFile" onChange={e => uploadFiles(e.target.files[0])}/>
                     
         </div>
         </>

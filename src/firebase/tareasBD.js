@@ -1,4 +1,4 @@
- import { initializeApp } from "firebase/app";
+ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {addDoc, collection,getFirestore} from 'firebase/storage'
 
@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 //inicializar firebase
-const app = initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 /**
