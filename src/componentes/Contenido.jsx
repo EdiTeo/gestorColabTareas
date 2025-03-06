@@ -1,8 +1,8 @@
 import '../index.css'
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp} from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { addDoc, collection, getFirestore, doc, deleteDoc, updateDoc, getDoc, getDocs } from 'firebase/firestore'; // Corregido
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //configuracion de firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDHMWKYqN68Uu3sNwUMW8I5pG9-t_QF3mw",
@@ -15,8 +15,8 @@ const firebaseConfig = {
     measurementId: "G-C5LYR0SJZH"
   };
    //inicializar firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+   const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+   const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
 /**
@@ -79,6 +79,14 @@ export async function updateTarea(id, tarea){
 
 export function  Contenido(){
     const [tareas, setTareas] = useState([]);
+    useEffect(() => {
+        const fetchTareas = async () => {
+            const querySnapshot = await getDocs(collection(db, 'tareas'));
+            const tareasData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setTareas(tareasData);
+        };
+        fetchTareas();
+    }, []);
     //funcionalidad para crear una tarea
     const handleSubmit  = async (e) => {
         e.preventDefault();
@@ -99,49 +107,105 @@ export function  Contenido(){
             }
         
     };
+    const handleEliminar = async (id) => {
+        try{
+            await deleteTarea(id);
+            setTareas(tareas.filter(tarea => tarea.id != id));//Actualizar el estado local
+            console.log("Eliminado exitosamente");
+            alert("Eliminado exitosamente ");
+        }catch(e){
+            console.error(`El error es: ${e}`);
+        }
+    }
+    const handleCheck = async (id)=>{
+        const tareaActualizada = tareas.map(tarea => 
+            tarea.id === id?{...tarea, estado: !tarea.estado}: tarea
+        );
+        setTareas(tareaActualizada);
+    }
     //mostrar el formulario para crear una tarea
      
     return(
         <>
-            <div className="text-sm-start">
-                <form onSubmit={handleSubmit}>
-                    <h2>Crear tarea</h2>
-                    <div className="form-group">
-                        <label htmlFor="titulo">Titulo</label>
-                        <input type="text" className="form-control" id="titulo" placeholder="Escribe el titulo de la tarea"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="descripcion">Descripción</label>
-                        <input type="text" className="form-control" id="descripcion" placeholder="Escribe la descripción de la tarea"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="fechaInicio">Fecha de inicio</label>
-                        <input type="date" className="form-control" id="fechaInicio"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="fechaFin">Fecha de fin</label>
-                        <input type="date" className="form-control" id="fechaFin"/>
-                    </div>
-                    <button type="submit" className="btn btn-primary">Crear tarea</button>
+            <div className="text-sm-start"> 
+                <form onSubmit={handleSubmit} >
+                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Crear tarea
+                </button>
+                                <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div className="modal-dialog" role="document">
+                                        <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="exampleModalLabel">Añadir nueva Tarea</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                        <div className="modal-body">
+                                <div className="form-group">
+                                    <label htmlFor="titulo">Titulo</label>
+                                    <input type="text" className="form-control" id="titulo" placeholder="Escribe el titulo de la tarea"/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="descripcion">Descripción</label>
+                                    <input type="text" className="form-control" id="descripcion" placeholder="Escribe la descripción de la tarea"/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="fechaInicio">Fecha de inicio</label>
+                                    <input type="date" className="form-control" id="fechaInicio"/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="fechaFin">Fecha de fin</label>
+                                    <input type="date" className="form-control" id="fechaFin"/>
+                                </div>
+                        </div>
+                            <div class="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Crear tarea</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>  
                 </form>
             </div>
-            <div className='lista-tareas'>
+            <div className='text-sm-start'>
                 <h2>Lista de tareas</h2>
-                <ul>
-                    {tareas.map((tarea) => (
-                        <div>
-                            <li key={tarea.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                <h3>{tarea.titulo}</h3>
-                                <p>{tarea.descripcion}</p>
-                                <p>{tarea.fechaInicio}</p>
-                                <p>{tarea.fechaFin}</p>
-                                <button className="btn btn-danger">Eliminar</button>
-                                <button className="btn btn-warning">Editar</button>
-                                <span>Estado: {tarea.estado ? '✅ Completado' : '⏳ Pendiente'}</span>
-                            </li>   
-                        </div>
-                    ))}
-                </ul>
+                <div className="list-group" style={{ width: 'auto' }}>
+                        {tareas.map((tarea) => (
+                                <label key={tarea.id} className="list-group-item list-group-item-action list-group-item-light d-flex gap-3">
+                                        <input 
+                                            className="form-check-input flex-shrink-0" 
+                                            type="checkbox" value={tarea.id} 
+                                            checked={tarea.estado} 
+                                            onChange={() => handleCheck(tarea.id)}
+                                            style={{fontSize:'1.375em'}}
+                                        />
+                                    <span className='pt-1 form-checked-content'>
+                                        <strong>{tarea.titulo}</strong>
+                                        <small className='d-block text-muted'>
+                                            <p>{tarea.descripcion}</p>
+                                            <i className="bi bi-calendar-event me-1" style={{fontSize: '1.375em'}}></i>
+
+                                            Inicio: {tarea.fechaInicio} - Fin: {tarea.fechaFin}
+                                        </small>
+                                    </span>
+                                    <div className="ms-auto d-flex flex-column gap-2">
+                                        <button 
+                                            type='button' 
+                                            className="btn btn-danger btn-sm" 
+                                            onClick={() => handleEliminar(tarea.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                        <button 
+                                            type='button' 
+                                            className="btn btn-warning btn-sm"
+                                        >
+                                            Editar
+                                        </button>
+                                    </div>
+                                    {/*<span>Estado: {tarea.estado ? '✅ Completado' : '⏳ Pendiente'}</span>*/}
+                                </label>     
+                        ))} 
+                </div>
             </div>
         </>
     );

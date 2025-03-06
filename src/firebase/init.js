@@ -1,5 +1,5 @@
  
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import {v4} from 'uuid';//Generar un identificador único
 // TODO: 
@@ -15,7 +15,7 @@ const firebaseConfig = {
 };
 
  
-const app = initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const storage =  getStorage(app);//Inicializar el servicio de almacenamiento
 
 export async function uploadFiles(file){//Subir archivos
