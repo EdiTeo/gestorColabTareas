@@ -1,7 +1,7 @@
 import '../index.css'
 import { initializeApp, getApps, getApp} from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { addDoc, collection, getFirestore, doc, deleteDoc, updateDoc, getDoc, getDocs } from 'firebase/firestore'; // Corregido
+//import { getAnalytics } from "firebase/analytics";
+import { addDoc, collection, getFirestore, doc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore'; // Corregido
 import { useState, useEffect } from 'react';
 //configuracion de firebase
 const firebaseConfig = {
@@ -16,15 +16,15 @@ const firebaseConfig = {
   };
    //inicializar firebase
    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-   const analytics = getAnalytics(app);
+   //const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
 /**
  * DATOS POR DEFECTO DE UNA TAREA
  *  descripción "255" (cadena)
     estado false (booleano)
-    fechaFin 14 de febrero de 2025, 12:34:28 a.m. UTC-4 (marca de tiempo)
-    fechaInicio 1 de febrero de 2025, 10:34:12 p.m. UTC-4 (marca de tiempo)
+    fechaFin 14 de febrero de 2025, 12:34:28a.m. UTC-4 (marca de tiempo)
+    fechaInicio 1 de febrero de 2025, 10:34:12p.m. UTC-4 (marca de tiempo)
     titulo "100"
  * 
  */
@@ -74,19 +74,20 @@ export async function updateTarea(id, tarea){
 }   
 //metodo para obtener tareas
 
-//metodo para obtener una tarea
-
-
-export function  Contenido(){
+export function Contenido(){
     const [tareas, setTareas] = useState([]);
+    const [modal, setModal] = useState({isOpen: false, mensaje: ""});//un espacio especificamente para el modal
+
     useEffect(() => {
         const fetchTareas = async () => {
-            const querySnapshot = await getDocs(collection(db, 'tareas'));
+            const querySnapshot = await getDocs(collection(db, 'tareas'));//
             const tareasData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setTareas(tareasData);
         };
         fetchTareas();
     }, []);
+
+
     //funcionalidad para crear una tarea
     const handleSubmit  = async (e) => {
         e.preventDefault();
@@ -112,11 +113,18 @@ export function  Contenido(){
             await deleteTarea(id);
             setTareas(tareas.filter(tarea => tarea.id != id));//Actualizar el estado local
             console.log("Eliminado exitosamente");
-            alert("Eliminado exitosamente ");
+            setModal({isOpen: true, mensaje:"La tarea fue eliminada exitosamente!!!"});
         }catch(e){
             console.error(`El error es: ${e}`);
+            setModal({isOpen: true, mensaje:"Hubo un error al eliminar la tarea"});
         }
     }
+    //metodo para cerrar el modal:: button=> CERRAR
+    const cerrarModal=() =>{
+        setModal({...modal, isOpen:false});
+    };
+
+
     const handleCheck = async (id)=>{
         const tareaActualizada = tareas.map(tarea => 
             tarea.id === id?{...tarea, estado: !tarea.estado}: tarea
@@ -141,7 +149,7 @@ export function  Contenido(){
                                         </div>
                         <div className="modal-body">
                                 <div className="form-group">
-                                    <label htmlFor="titulo">Titulo</label>
+                                    <label htmlFor="titulo">Titulo <span style={{ color: 'red' }}>*</span></label>
                                     <input type="text" className="form-control" id="titulo" placeholder="Escribe el titulo de la tarea"/>
                                 </div>
                                 <div className="form-group">
@@ -149,11 +157,11 @@ export function  Contenido(){
                                     <input type="text" className="form-control" id="descripcion" placeholder="Escribe la descripción de la tarea"/>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="fechaInicio">Fecha de inicio</label>
+                                    <label htmlFor="fechaInicio">Fecha de inicio <span style={{ color: 'red' }}>*</span></label>
                                     <input type="date" className="form-control" id="fechaInicio"/>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="fechaFin">Fecha de fin</label>
+                                    <label htmlFor="fechaFin">Fecha de fin <span style={{ color: 'red' }}>*</span></label>
                                     <input type="date" className="form-control" id="fechaFin"/>
                                 </div>
                         </div>
@@ -170,41 +178,56 @@ export function  Contenido(){
                 <h2>Lista de tareas</h2>
                 <div className="list-group" style={{ width: 'auto' }}>
                         {tareas.map((tarea) => (
-                                <label key={tarea.id} className="list-group-item list-group-item-action list-group-item-light d-flex gap-3">
+                                    <label key={tarea.id} className="list-group-item list-group-item-action list-group-item-light d-flex gap-3">
                                         <input 
-                                            className="form-check-input flex-shrink-0" 
-                                            type="checkbox" value={tarea.id} 
-                                            checked={tarea.estado} 
-                                            onChange={() => handleCheck(tarea.id)}
-                                            style={{fontSize:'1.375em'}}
+                                                className="form-check-input flex-shrink-0" 
+                                                type="checkbox" value={tarea.id} 
+                                                checked={tarea.estado} 
+                                                onChange={() => handleCheck(tarea.id)}
+                                                style={{fontSize:'1.375em'}}
                                         />
-                                    <span className='pt-1 form-checked-content'>
-                                        <strong>{tarea.titulo}</strong>
-                                        <small className='d-block text-muted'>
-                                            <p>{tarea.descripcion}</p>
-                                            <i className="bi bi-calendar-event me-1" style={{fontSize: '1.375em'}}></i>
+                                        <span className='pt-1 form-checked-content'>
+                                            <strong>{tarea.titulo}</strong>
+                                            <small className='d-block text-muted'>
+                                                <p>{tarea.descripcion}</p>
+                                                <i className="bi bi-calendar-event me-1" style={{fontSize: '1.375em'}}></i>
 
-                                            Inicio: {tarea.fechaInicio} - Fin: {tarea.fechaFin}
-                                        </small>
-                                    </span>
-                                    <div className="ms-auto d-flex flex-column gap-2">
-                                        <button 
-                                            type='button' 
-                                            className="btn btn-danger btn-sm" 
-                                            onClick={() => handleEliminar(tarea.id)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                        <button 
-                                            type='button' 
-                                            className="btn btn-warning btn-sm"
-                                        >
-                                            Editar
-                                        </button>
-                                    </div>
-                                    {/*<span>Estado: {tarea.estado ? '✅ Completado' : '⏳ Pendiente'}</span>*/}
-                                </label>     
+                                                Inicio: {tarea.fechaInicio} - Fin: {tarea.fechaFin}
+                                            </small>
+                                        </span>
+                                        <div className="ms-auto d-flex flex-column gap-2">
+                                            <button 
+                                                type='button' 
+                                                className="btn btn-danger btn-sm" 
+                                                onClick={() => handleEliminar(tarea.id)}
+                                            >
+                                                Eliminar
+                                            </button>
+                                            <button 
+                                                type='button' 
+                                                className="btn btn-warning btn-sm"
+                                            > Editar
+                                            </button>
+                                        </div>
+                                        {/*<span>Estado: {tarea.estado ? '✅ Completado' : '⏳ Pendiente'}</span>*/}
+                                    </label>     
                         ))} 
+                        {modal.isOpen && (
+                            <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                                <div className="modal-dialog modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-body">
+                                            <h5>{modal.mensaje}</h5>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button className="btn btn-secondary" onClick={cerrarModal}>
+                                                Cerrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                           </div>
+                        )}
                 </div>
             </div>
         </>
