@@ -73,11 +73,11 @@ export async function updateTarea(id, tarea){
     }
 }   
 //metodo para obtener tareas
-
+//=======================================================================================
 export function Contenido(){
     const [tareas, setTareas] = useState([]);
     const [modal, setModal] = useState({isOpen: false, mensaje: ""});//un espacio especificamente para el modal
-
+    const [datosForm, setForm] = useState({titulo:'', descripcion:'', fechaInicio:'', fechaFin:''});
     useEffect(() => {
         const fetchTareas = async () => {
             const querySnapshot = await getDocs(collection(db, 'tareas'));//
@@ -91,20 +91,17 @@ export function Contenido(){
     //funcionalidad para crear una tarea
     const handleSubmit  = async (e) => {
         e.preventDefault();
-        const titulo = e.target.titulo.value;
-        const descripcion = e.target.descripcion.value;
-        const fechaInicio = e.target.fechaInicio.value;
-        const fechaFin = e.target.fechaFin.value;
         const nuevaTarea = {
-            titulo,
-            descripcion,
+            titulo : datosForm.titulo,
+            descripcion : datosForm.descripcion,
             estado: false,
-            fechaInicio,
-            fechaFin,
+            fechaInicio : datosForm.fechaInicio,
+            fechaFin : datosForm.fechaFin,
         };
         const mostrarTarea = await createTarea(nuevaTarea);
             if(mostrarTarea){
                 setTareas([...tareas, mostrarTarea]);
+                setForm({titulo:'', descripcion:'', fechaInicio:'', fechaFin:''});//Se limpia el dato
             }
         
     };
@@ -150,22 +147,33 @@ export function Contenido(){
                         <div className="modal-body">
                                 <div className="form-group">
                                     <label htmlFor="titulo">Titulo <span style={{ color: 'red' }}>*</span></label>
-                                    <input type="text" className="form-control" id="titulo"
+                                    <input value={datosForm.titulo} type="text" className="form-control" id="titulo"
                                      placeholder="Escribe el titulo de la tarea"
-                                     onChange={(e)=>setTareas(e.target.titulo.value)}
+                                     onChange={(e)=>setForm({...datosForm, titulo:e.target.value})}
                                      />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="descripcion">Descripción</label>
-                                    <input type="text" className="form-control" id="descripcion" placeholder="Escribe la descripción de la tarea"/>
+                                    <input value={datosForm.descripcion} 
+                                    type="text" className="form-control" id="descripcion" 
+                                    placeholder="Escribe la descripción de la tarea"
+                                    onChange={(e)=>setForm({...datosForm, descripcion:e.target.value})}
+                                    />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="fechaInicio">Fecha de inicio <span style={{ color: 'red' }}>*</span></label>
-                                    <input type="date" className="form-control" id="fechaInicio"/>
+                                    <input value={datosForm.fechaInicio}
+                                     type="date" className="form-control" 
+                                     id="fechaInicio"
+                                     onChange={(e)=>setForm({...datosForm, fechaInicio:e.target.value})}
+                                     />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="fechaFin">Fecha de fin <span style={{ color: 'red' }}>*</span></label>
-                                    <input type="date" className="form-control" id="fechaFin"/>
+                                    <input value={datosForm.fechaFin} type="date"
+                                     className="form-control" id="fechaFin"
+                                     onChange={(e)=>setForm({...datosForm, fechaFin:e.target.value})}
+                                     />
                                 </div>
                         </div>
                             <div class="modal-footer">
