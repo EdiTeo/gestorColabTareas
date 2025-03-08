@@ -136,7 +136,7 @@ export function Contenido(){
     return(
         <>
             <div className="text-sm-start"> 
-                <form onSubmit={handleSubmit} >
+                 
                 <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                       <strong>Crear tarea</strong>
                 </button>
