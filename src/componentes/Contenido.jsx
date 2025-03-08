@@ -137,8 +137,8 @@ export function Contenido(){
         <>
             <div className="text-sm-start"> 
                 <form onSubmit={handleSubmit} >
-                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Crear tarea
+                <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <strong>Crear tarea</strong>
                 </button>
                                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div className="modal-dialog" role="document">
@@ -150,7 +150,10 @@ export function Contenido(){
                         <div className="modal-body">
                                 <div className="form-group">
                                     <label htmlFor="titulo">Titulo <span style={{ color: 'red' }}>*</span></label>
-                                    <input type="text" className="form-control" id="titulo" placeholder="Escribe el titulo de la tarea"/>
+                                    <input type="text" className="form-control" id="titulo"
+                                     placeholder="Escribe el titulo de la tarea"
+                                     onChange={(e)=>setTareas(e.target.titulo.value)}
+                                     />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="descripcion">Descripción</label>
@@ -175,7 +178,7 @@ export function Contenido(){
                 </form>
             </div>
             <div className='text-sm-start'>
-                <h2>Lista de tareas</h2>
+                <h2 style={{fontFamily:'__Epilogue_61966b, sans-serif', fontWeight:'bold', color:'rgb(10, 68, 74)'}}>Lista de tareas</h2>
                 <div className="list-group" style={{ width: 'auto' }}>
                         {tareas.map((tarea) => (
                                     <label key={tarea.id} className="list-group-item list-group-item-action list-group-item-light d-flex gap-3">
@@ -220,7 +223,7 @@ export function Contenido(){
                                             <h5>{modal.mensaje}</h5>
                                         </div>
                                         <div className="modal-footer">
-                                            <button className="btn btn-secondary" onClick={cerrarModal}>
+                                            <button className="btn btn-danger" onClick={cerrarModal}>
                                                 Cerrar
                                             </button>
                                         </div>
